@@ -9,14 +9,17 @@ import SwiftUI
 
 struct SettingsView: View {
     @State private var numberQuestion = 0
+    @State private var numberTables = 1
     
     let numberQuestions = ["5", "10", "20", "All"]
     
     var body: some View {
         NavigationView {
             Form {
-                Section {
-                    
+                Section(header: Text("Practice tables up to")) {
+                    Stepper(value: $numberTables, in: 1...12) {
+                        Text("\(numberTables)")
+                    }
                 }
                 
                 Section(header: Text("Number of problems")) {
@@ -28,13 +31,13 @@ struct SettingsView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 
-                Section {
-                    Button("Start Game!") {
-                        
-                    }
-                }
             }
             .navigationTitle("Multiplication Tables")
+            .toolbar{
+                Button("Start Game!") {
+                    
+                }
+            }
         }
     }
 }
@@ -46,7 +49,10 @@ struct GameView: View {
 }
 
 struct ContentView: View {
-    @State private var gameRunning = false
+    @State private var gameRunning = true
+    @State private var question = [(Double, Double)]()
+    @State private var currentQuestions = 0
+    @State private var score = 0
     
     var body: some View {
         Group {
@@ -56,6 +62,18 @@ struct ContentView: View {
                 SettingsView()
             }
         }
+    }
+    
+    func newGame() {
+        
+    }
+    
+    func generateQuestions() {
+        
+    }
+    
+    func checkAnswer() {
+        
     }
 }
 
