@@ -57,6 +57,7 @@ struct SettingsView: View {
         }
         tempArray.shuffle()
         let numQuestion = numberQuestions[numberQuestion]
+        
         if numQuestion == "All" {
             questions = tempArray
         } else if numQuestion == "20" && numberTables == 1 {
@@ -70,29 +71,53 @@ struct SettingsView: View {
 }
 
 struct GameView: View {
-    @State private var exampleQuestion = [(1,1), (2,2)]
-    @State private var currentQuestion = 0
     @State private var score = 0
-    @State private var answer = ""
+    @State private var inputAnswer = ""
+    @State private var showingAlert = false
+    @State private var alertMessage = ""
     
     @Binding var gameRunning: Bool
     @Binding var questions: [(Int, Int)]
     
+
+    
     var body: some View {
         VStack {
-            Text("What is \(exampleQuestion[currentQuestion].0) x \(exampleQuestion[currentQuestion].1)?")
-        
-            TextField("Enter your answer", text: $answer)
-                .multilineTextAlignment(.center)
-                .keyboardType(.numberPad)
-            Button("Submit Answer") {
-                checkAnswer()
+            if questions.count == 0 {
+                Text("Final Score: \(score)")
+                Button("New Game") {
+                    gameRunning = false
+                }
+            } else {
+                Text("What is \(questions[0].0) x \(questions[0].1)?")
+            
+                TextField("Enter your answer", text: $inputAnswer)
+                    .multilineTextAlignment(.center)
+                    .keyboardType(.numberPad)
+                Button("Submit Answer") {
+                    checkAnswer()
+                }
+
             }
+        }
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text("Current Score: \(score)"), message: Text("\(alertMessage)"), dismissButton: .default(Text("Next Question!")))
         }
     }
     
     func checkAnswer() {
+        let correctAnswer = String(Int(questions[0].0) * Int(questions[0].1))
+        if correctAnswer == inputAnswer {
+            score += 1
+            alertMessage = "Correct!"
+        } else {
+            alertMessage = "Sorry, \"\(correctAnswer)\" was the correct choice."
+        }
         
+        inputAnswer = ""
+        questions.removeFirst()
+        showingAlert = true
+
     }
 }
 
